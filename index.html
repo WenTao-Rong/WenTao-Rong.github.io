@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/05/test/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/08/%E8%AF%BB%E5%86%99%E9%94%81+%E5%88%86%E6%AE%B5%E9%94%81%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84unordered_map/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wentao Yung">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/03/05/test/" itemprop="url">test</a></h1>
+                <a class="post-title-link" href="/2020/03/08/%E8%AF%BB%E5%86%99%E9%94%81+%E5%88%86%E6%AE%B5%E9%94%81%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84unordered_map/" itemprop="url">读写锁+分段锁实现线程安全的unordered_map</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-05T14:23:30+08:00">
-                2020-03-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-08T23:35:30+08:00">
+                2020-03-08
               </time>
             
 
@@ -300,138 +300,12 @@
       
         
           
-            
-          
-        
-      
-    </div>
-    
-    
-    
+            <h1 id="读写锁-分段锁实现线程安全的unordered-map"><a href="#读写锁-分段锁实现线程安全的unordered-map" class="headerlink" title="读写锁+分段锁实现线程安全的unordered_map"></a>读写锁+分段锁实现线程安全的unordered_map</h1><h3 id="safe-unordered-map-cpp"><a href="#safe-unordered-map-cpp" class="headerlink" title="safe_unordered_map.cpp"></a>safe_unordered_map.cpp</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码来自《c++并发编程实战》</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;mutex&gt; //unique_lock</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;utility&gt;//pair</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt; //find_if</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;shared_mutex&gt; //C++17支持</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;list&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt; //Hash</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">//unordered_map内部采用了哈希表的数据结构</span></span><br><span class="line"><span class="comment">采用链地址法解决hash冲突的哈希表实现方法：</span></span><br><span class="line"><span class="comment">map用vector&lt;unique_ptr&lt;bucket_type&gt;&gt; buckets 装有多个桶（bucket），每个桶存有多对键值对(pair),每对键值对根据key值哈希到相应的桶，每一桶都有一把读写锁来实现细粒度锁。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">/*通常读写锁需要完成以下功能：</span></span><br><span class="line"><span class="comment">1.当 data 被线程A读取时，其他线程仍可以进行读取却不能写入</span></span><br><span class="line"><span class="comment">2.当 data 被线程A写入时，其他线程既不能读取也不能写入</span></span><br><span class="line"><span class="comment">对应于功能1,2我们可以这样来描述：</span></span><br><span class="line"><span class="comment">1.当线程A获得共享锁时，其他线程仍可以获得共享锁但不能获得独占锁</span></span><br><span class="line"><span class="comment">2.当线程A获得独占锁时，其他线程既不能获得共享锁也不能获得独占锁*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> Value, <span class="keyword">typename</span> Hash = hash&lt;Key&gt;&gt;</span><br><span class="line">class safe_unordered_map</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="comment">//声明桶bucket类</span></span><br><span class="line">	class bucket_type &#123;</span><br><span class="line">	<span class="keyword">public</span>:</span><br><span class="line">		<span class="comment">//取值 const&amp; 表示以引用方式传入key值并且函数不能改变key值，这是好的编程习惯</span></span><br><span class="line">        <span class="comment">//如果不存在该key，返回设定的默认值</span></span><br><span class="line">		Value value(Key <span class="keyword">const</span>&amp; key,Key <span class="keyword">const</span>&amp; default_value)</span><br><span class="line">		&#123;</span><br><span class="line">            <span class="comment">//获得共享锁</span></span><br><span class="line">			shared_lock&lt;shared_mutex&gt; lock(_mutex);</span><br><span class="line">			_bucket_const_iterator found_entry = find_entry(key);</span><br><span class="line">			<span class="keyword">return</span> (found_entry == _data.<span class="built_in">end</span>()) ? default_value: found_entry-&gt;second;</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="comment">//修改值或新增键值对</span></span><br><span class="line">		<span class="function"><span class="keyword">void</span> <span class="title">add_or_update</span><span class="params">(Key <span class="keyword">const</span>&amp; key, Value <span class="keyword">const</span>&amp; value)</span></span></span><br><span class="line"><span class="function">		</span>&#123;</span><br><span class="line">			<span class="comment">//获得独占锁</span></span><br><span class="line">			<span class="function">unique_lock&lt;shared_mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">			<span class="comment">//如果已经存在该key,修改已有值</span></span><br><span class="line">			_bucket_iterator found_entry = find_entry(key);</span><br><span class="line">			<span class="keyword">if</span> (found_entry == _data.<span class="built_in">end</span>())</span><br><span class="line">				_data.push_back(_bucket_value(key, value));</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				found_entry-&gt;second = value;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(Key <span class="keyword">const</span>&amp; key)</span></span></span><br><span class="line"><span class="function">		</span>&#123;</span><br><span class="line">            <span class="comment">//获得独占锁</span></span><br><span class="line">			<span class="function">unique_lock&lt;shared_mutex&gt; <span class="title">lock</span><span class="params">(_mutex)</span></span>;</span><br><span class="line">			_bucket_iterator <span class="keyword">const</span> found_entry = find_entry(key);</span><br><span class="line">			<span class="keyword">if</span> (found_entry != _data.<span class="built_in">end</span>())</span><br><span class="line">				_data.erase(found_entry);</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">private</span>:</span><br><span class="line">		shared_mutex _mutex;</span><br><span class="line">		<span class="keyword">typedef</span> pair&lt;Key, Value&gt; _bucket_value;<span class="comment">//声明bucket内容的数据类型为pair</span></span><br><span class="line">		<span class="keyword">typedef</span> <span class="built_in">list</span>&lt;pair&lt;Key, Value&gt;&gt; _bucket_data;<span class="comment">//双向链表存储每对键值对。</span></span><br><span class="line">		<span class="comment">//声明访问bucket的const迭代器（读）和非const迭代器 (写，改)的类型</span></span><br><span class="line">		<span class="keyword">typedef</span> <span class="keyword">typename</span> _bucket_data::iterator _bucket_iterator;</span><br><span class="line">		<span class="keyword">typedef</span> <span class="keyword">typename</span> _bucket_data::iterator _bucket_const_iterator;</span><br><span class="line">		<span class="comment">//定义一个桶</span></span><br><span class="line">		_bucket_data _data;</span><br><span class="line">		<span class="comment">//查询时候是否有该key 返回非const迭代器 </span></span><br><span class="line">		<span class="function">_bucket_iterator <span class="title">find_entry</span><span class="params">(Key <span class="keyword">const</span>&amp; key)</span></span></span><br><span class="line"><span class="function">		</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> find_if(_data.<span class="built_in">begin</span>(),_data.<span class="built_in">end</span>(), [&amp;](_bucket_value <span class="keyword">const</span>&amp; item)         &#123;<span class="keyword">return</span> item.first == key;&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">		<span class="comment">//查询时候是否有该key 返回const迭代器，</span></span><br><span class="line">        <span class="comment">// 一般对于不需修改类成员变量的成员函数尽量声明为const成员函数，以防止产生const对象无法调用该成员函数的问题，同时保持逻辑的清晰。const成员不能调用非const成员函数</span></span><br><span class="line">		<span class="function">_bucket_const_iterator <span class="title">find_entry</span><span class="params">(Key <span class="keyword">const</span>&amp; key)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">		</span>&#123;</span><br><span class="line">         <span class="comment">//默认情况下，即捕获字段为 [] 时，lambda表达式是不能访问任何外部变量的，即表达式的函          数体内无法访问当前作用域下的变量，如果是[&amp;],通过引用方式访问所有外部变量.</span></span><br><span class="line">			<span class="keyword">return</span> find_if(_data.<span class="built_in">begin</span>(),_data.<span class="built_in">end</span>(), [&amp;](_bucket_value <span class="keyword">const</span>&amp; item) &#123;<span class="keyword">return</span> item.first == key;&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="comment">//定义多个桶 </span></span><br><span class="line">    <span class="comment">//智能指针unique_ptr指针本身的生命周期：从unique_ptr指针创建时开始，直到离开作用域。离开作用域时，若其指向对象，则将其所指对象销毁</span></span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="built_in">unique_ptr</span>&lt;bucket_type&gt;&gt; buckets;</span><br><span class="line">	<span class="comment">//Hash是函数对象</span></span><br><span class="line">	Hash hasher;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">//构造一个safemap的构造函数,可输入bucket的数量或 hash函数，默认构造和初始化列</span></span><br><span class="line">	safe_unordered_map(<span class="keyword">unsigned</span> number_buckets = <span class="number">19</span>, Hash <span class="keyword">const</span>&amp; hasher_ = Hash()) :buckets(number_buckets), hasher(hasher_)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">unsigned</span> i = <span class="number">0</span>; i &lt; number_buckets; i++)</span><br><span class="line">	 <span class="comment">//unique_ptr 不支持拷贝和赋值操作；reset销毁唯一指针的当前管理的对象，接管另外一个对象。</span></span><br><span class="line">			buckets[i].reset(<span class="keyword">new</span> bucket_type);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//编译器默认为一个类生成一些默认函数，=delete用来删除这些函数，在这里是不允许拷贝构造和拷贝     赋值</span></span><br><span class="line">	safe_unordered_map(safe_unordered_map <span class="keyword">const</span>&amp; other) = <span class="keyword">delete</span>;</span><br><span class="line">	safe_unordered_map <span class="keyword">const</span>&amp; <span class="keyword">operator</span>= (safe_unordered_map <span class="keyword">const</span>&amp; other) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="comment">//通过hash函数获取key所在的桶，返回桶的引用</span></span><br><span class="line">    <span class="comment">//最大的好处是在内存中不产生返回值的副本</span></span><br><span class="line">	<span class="function">bucket_type&amp; <span class="title">get_bucket</span><span class="params">(Key <span class="keyword">const</span>&amp; key)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">size_t</span> <span class="keyword">const</span> bucket_index = hasher(key) % buckets.<span class="built_in">size</span>();</span><br><span class="line">		<span class="keyword">return</span> *buckets[bucket_index];</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//取值，获取</span></span><br><span class="line">	<span class="function">Value <span class="title">value</span><span class="params">(Key <span class="keyword">const</span>&amp; key, Key <span class="keyword">const</span>&amp; default_value)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> get_bucket(key).value(key,default_value);</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//删除键值对</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(Key <span class="keyword">const</span>&amp; key)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		get_bucket(key).<span class="built_in">remove</span>(key);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
+<h3 id="main-cpp"><a href="#main-cpp" class="headerlink" title="main.cpp"></a>main.cpp</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"safe_unordered_map.cpp"</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">		safe_unordered_map&lt;<span class="built_in">std</span>::<span class="built_in">string</span>, <span class="built_in">std</span>::<span class="built_in">string</span>&gt; my_map;</span><br><span class="line">		<span class="comment">//通过get_bucket的参数key来选择你需要往哪个桶中存放数据</span></span><br><span class="line">		<span class="comment">//再调用add_or_update来存放你的key和value</span></span><br><span class="line">		 my_map.get_bucket(<span class="string">"d"</span>).add_or_update(<span class="string">"d"</span>, <span class="string">"aa"</span>);</span><br><span class="line">		 my_map.get_bucket(<span class="string">"d"</span>).<span class="built_in">remove</span>(<span class="string">"d"</span>);</span><br><span class="line">		<span class="comment">//调用value来获得key值</span></span><br><span class="line">		<span class="comment">//你会发现value也需要key和value这是应为value_for的value是默认值用来确定返回的是否是真的key值如果是默认值就代表没有查询到</span></span><br><span class="line">		 <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"key a for value ="</span> &lt;&lt; my_map.get_bucket(<span class="string">"d"</span>).value(<span class="string">"d"</span>,<span class="string">"-1"</span>) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/05/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Wentao Yung">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="容文滔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/05/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-05T14:19:23+08:00">
-                2020-03-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
           
         
@@ -513,7 +387,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
