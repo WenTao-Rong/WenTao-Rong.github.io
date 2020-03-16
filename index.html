@@ -229,6 +229,134 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/16/%E5%89%8D%E7%BC%80%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wentao Yung">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="容文滔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/16/%E5%89%8D%E7%BC%80%E6%A0%91/" itemprop="url">前缀树</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-16T18:37:58+08:00">
+                2020-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前缀树"><a href="#前缀树" class="headerlink" title="前缀树"></a>前缀树</h2><p>前缀树又名字典树，单词查找树，可用于海量字符串的判重和排序（先序遍历得到排序结果），文章的词频统计（在节点上存储计数信息）。前缀树的根节点不包含字符，除根节点外每一个节点都只包含一个字符； 从根节点到某一节点，路径上经过的字符连接起来，为该节点对应的字符串； 每个节点的所有子节点包含的字符都不相同</p>
+<h3 id="1-前缀树的实现（leetcode-208）"><a href="#1-前缀树的实现（leetcode-208）" class="headerlink" title="1.前缀树的实现（leetcode.208）"></a>1.前缀树的实现（<a href="https://leetcode-cn.com/problems/implement-trie-prefix-tree/" target="_blank" rel="noopener">leetcode.208</a>）</h3><p>实现一个 Trie (前缀树)，包含 <code>insert</code>, <code>search</code>, 和 <code>startsWith</code> 这三个操作。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"><span class="comment">//内部类可以直接访问外部类的私有成员变量，但是外部类不能直接访问内部类的私有成员变量，必须把外部类声明为内部类的友元类</span></span><br><span class="line">    <span class="comment">/** Initialize your data structure here. */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>&#123;</span></span><br><span class="line">         TrieNode * child[<span class="number">26</span>];</span><br><span class="line">         <span class="keyword">bool</span>  isword;</span><br><span class="line">         <span class="keyword">public</span>:</span><br><span class="line">         <span class="keyword">friend</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span>;</span></span><br><span class="line">         TrieNode()</span><br><span class="line">         &#123;</span><br><span class="line">             isword=<span class="literal">false</span>;</span><br><span class="line">             <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">26</span>;i++)</span><br><span class="line">               child[i]=<span class="literal">nullptr</span>;</span><br><span class="line">         &#125;  </span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    TrieNode* root=<span class="keyword">new</span> TrieNode();<span class="comment">//用this指针就行</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    Trie() &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Inserts a word into the trie. */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="built_in">string</span> <span class="keyword">word</span>)</span> </span>&#123;</span><br><span class="line">        TrieNode* cur=root;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> c:<span class="keyword">word</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(cur-&gt;child[c-<span class="string">'a'</span>]==<span class="literal">nullptr</span>)&#123;</span><br><span class="line">                  cur-&gt;child[c-<span class="string">'a'</span>]=<span class="keyword">new</span> TrieNode();   </span><br><span class="line">            &#125;</span><br><span class="line">            cur=cur-&gt;child[c-<span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        cur-&gt;isword=<span class="literal">true</span>;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Returns if the word is in the trie. */</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">search</span><span class="params">(<span class="built_in">string</span> <span class="keyword">word</span>)</span> </span>&#123;</span><br><span class="line">        TrieNode* cur=root;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> c:<span class="keyword">word</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(cur-&gt;child[c-<span class="string">'a'</span>]==<span class="literal">nullptr</span>)</span><br><span class="line">              <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            cur=cur-&gt;child[c-<span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur-&gt;isword;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Returns if there is any word in the trie that starts with the given prefix. */</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">startsWith</span><span class="params">(<span class="built_in">string</span> prefix)</span> </span>&#123;</span><br><span class="line">        TrieNode* cur=root;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> c:prefix)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(cur-&gt;child[c-<span class="string">'a'</span>]==<span class="literal">nullptr</span>)</span><br><span class="line">              <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            cur=cur-&gt;child[c-<span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Trie trie = <span class="keyword">new</span> Trie();</span><br><span class="line"></span><br><span class="line">trie.insert(<span class="string">"apple"</span>);</span><br><span class="line">trie.search(<span class="string">"apple"</span>);   <span class="comment">// 返回 true</span></span><br><span class="line">trie.search(<span class="string">"app"</span>);     <span class="comment">// 返回 false</span></span><br><span class="line">trie.startsWith(<span class="string">"app"</span>); <span class="comment">// 返回 true</span></span><br><span class="line">trie.insert(<span class="string">"app"</span>);   </span><br><span class="line">trie.search(<span class="string">"app"</span>);     <span class="comment">// 返回 true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-键值映射-leetcode677"><a href="#2-键值映射-leetcode677" class="headerlink" title="2.键值映射 (leetcode677)"></a>2.键值映射 <a href="https://leetcode-cn.com/problems/map-sum-pairs/" target="_blank" rel="noopener">(leetcode677)</a></h3><p>实现一个 MapSum 类里的两个方法，insert 和 sum。</p>
+<p>对于方法 insert，你将得到一对（字符串，整数）的键值对。字符串表示键，整数表示值。如果键已经存在，那么原来的键值对将被替代成新的键值对。</p>
+<p>对于方法 sum，你将得到一个表示前缀的字符串，你需要返回所有以该前缀开头的键的值的总和。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MapSum</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">/** Initialize your data structure here. */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        TrieNode * child[<span class="number">26</span>];</span><br><span class="line">        <span class="keyword">int</span> count;</span><br><span class="line">        <span class="keyword">bool</span> isword;</span><br><span class="line">        <span class="keyword">friend</span> <span class="class"><span class="keyword">class</span> <span class="title">MapSum</span>;</span></span><br><span class="line">        <span class="keyword">public</span>:</span><br><span class="line">        TrieNode(<span class="keyword">int</span> val=<span class="number">0</span>):count(val)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">26</span>;i++)</span><br><span class="line">              child[i]=<span class="literal">nullptr</span>;</span><br><span class="line">            count=val;</span><br><span class="line">            isword=<span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    TrieNode * root=<span class="keyword">new</span> TrieNode(<span class="number">0</span>);   </span><br><span class="line">    MapSum() &#123;  </span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="built_in">string</span> key, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">bool</span> existword=<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">int</span> existnum=exist(key,existword);</span><br><span class="line">        TrieNode *cur= root;</span><br><span class="line">        <span class="comment">//如果键已经存在，那么原来的键值对将被替代成新的键值对，所以如果存在该key，下面的插入过程经过该key的节点都要减去对应的值</span></span><br><span class="line">        <span class="keyword">if</span>(!existword)</span><br><span class="line">          existnum=<span class="number">0</span>;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">char</span> i:key)</span><br><span class="line">       &#123;</span><br><span class="line">          <span class="keyword">if</span>(cur-&gt;child[i-<span class="string">'a'</span>]==<span class="literal">nullptr</span>)</span><br><span class="line">             cur-&gt;child[i-<span class="string">'a'</span>]=<span class="keyword">new</span> TrieNode(val);</span><br><span class="line">           <span class="keyword">else</span></span><br><span class="line">              (cur-&gt;child[i-<span class="string">'a'</span>]-&gt;count)+=(val-existnum);</span><br><span class="line">          cur=cur-&gt;child[i-<span class="string">'a'</span>];</span><br><span class="line">       &#125;</span><br><span class="line">        </span><br><span class="line">       cur-&gt;isword=<span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="built_in">string</span> prefix)</span> </span>&#123;</span><br><span class="line">        TrieNode *cur= root;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">char</span> i:prefix)</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="keyword">if</span>(cur-&gt;child[i-<span class="string">'a'</span>]==<span class="literal">nullptr</span>)</span><br><span class="line">             <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            cur=cur-&gt;child[i-<span class="string">'a'</span>];</span><br><span class="line">       &#125;</span><br><span class="line">        <span class="keyword">return</span> cur-&gt;count;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断是否存在该key，返回键的值和是否存在该key</span></span><br><span class="line">    <span class="comment">//existflag表示是否存在该key</span></span><br><span class="line">     <span class="function"><span class="keyword">int</span>  <span class="title">exist</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; <span class="keyword">word</span>,<span class="keyword">bool</span>&amp; existflag)</span> </span>&#123;</span><br><span class="line">        TrieNode *cur= root;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">char</span> i:<span class="keyword">word</span>)</span><br><span class="line">       &#123;</span><br><span class="line">           <span class="keyword">if</span>(cur-&gt;child[i-<span class="string">'a'</span>]==<span class="literal">nullptr</span>)</span><br><span class="line">             &#123;</span><br><span class="line">                 existflag=<span class="literal">false</span>;</span><br><span class="line">                 <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">             &#125;</span><br><span class="line">            cur=cur-&gt;child[i-<span class="string">'a'</span>];</span><br><span class="line">       &#125;</span><br><span class="line">        existflag=cur-&gt;isword;</span><br><span class="line">        <span class="keyword">return</span> cur-&gt;count;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/14/c++%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88Shared_Ptr%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -511,7 +639,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
