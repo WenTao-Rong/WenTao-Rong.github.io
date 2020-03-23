@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="二叉树递归," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="做14道来自leetcode easy难度的leetcode二叉树递归题，练习下二叉树递归（点击题目可转到leetcode）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="14道二叉树递归leetcode题目以及解法">
+<meta property="og:url" content="http://yoursite.com/2020/03/23/14%E9%81%93%E4%BA%8C%E5%8F%89%E6%A0%91%E9%80%92%E5%BD%92leetcode%E9%A2%98%E7%9B%AE%E4%BB%A5%E5%8F%8A%E8%A7%A3%E6%B3%95/index.html">
+<meta property="og:site_name" content="容文滔">
+<meta property="og:description" content="做14道来自leetcode easy难度的leetcode二叉树递归题，练习下二叉树递归（点击题目可转到leetcode）。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-03-23T15:54:23.829Z">
+<meta property="article:modified_time" content="2020-03-23T15:54:23.829Z">
+<meta property="article:author" content="Wentao Yung">
+<meta property="article:tag" content="二叉树递归">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/23/14道二叉树递归leetcode题目以及解法/"/>
+
+
+
+
+
+  <title>14道二叉树递归leetcode题目以及解法 | 容文滔</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">容文滔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/23/14%E9%81%93%E4%BA%8C%E5%8F%89%E6%A0%91%E9%80%92%E5%BD%92leetcode%E9%A2%98%E7%9B%AE%E4%BB%A5%E5%8F%8A%E8%A7%A3%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wentao Yung">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="容文滔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">14道二叉树递归leetcode题目以及解法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-23T23:54:23+08:00">
+                2020-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BA%8C%E5%8F%89%E6%A0%91/" itemprop="url" rel="index">
+                    <span itemprop="name">二叉树</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>做14道来自leetcode easy难度的leetcode二叉树递归题，练习下二叉树递归（点击题目可转到leetcode）。</p>
+<a id="more"></a>
+
+<p><a href="https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. 二叉树的最大深度</a></p>
+<p><a href="https://leetcode-cn.com/problems/balanced-binary-tree/" target="_blank" rel="noopener">110. 平衡二叉树</a></p>
+<p><a href="https://leetcode-cn.com/problems/diameter-of-binary-tree/" target="_blank" rel="noopener">543. 二叉树的直径</a></p>
+<p><a href="https://leetcode-cn.com/problems/invert-binary-tree/" target="_blank" rel="noopener">226. 翻转二叉树</a></p>
+<p><a href="https://leetcode-cn.com/problems/merge-two-binary-trees/" target="_blank" rel="noopener">617. 合并二叉树</a></p>
+<p><a href="https://leetcode-cn.com/problems/path-sum/" target="_blank" rel="noopener">112. 路径总和</a></p>
+<p><a href="https://leetcode-cn.com/problems/path-sum-iii/" target="_blank" rel="noopener">437. 路径总和 III</a></p>
+<p><a href="https://leetcode-cn.com/problems/subtree-of-another-tree/" target="_blank" rel="noopener">572. 另一个树的子树</a></p>
+<p><a href="https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">111. 二叉树的最小深度</a></p>
+<p><a href="https://leetcode-cn.com/problems/sum-of-left-leaves/" target="_blank" rel="noopener">404. 左叶子之和</a></p>
+<p><a href="https://leetcode-cn.com/problems/symmetric-tree/" target="_blank" rel="noopener">101. 对称二叉树</a></p>
+<p><a href="https://leetcode-cn.com/problems/longest-univalue-path/" target="_blank" rel="noopener">687. 最长同值路径</a></p>
+<p><a href="https://leetcode-cn.com/problems/second-minimum-node-in-a-binary-tree/" target="_blank" rel="noopener">671. 二叉树中第二小的节点</a></p>
+<p><a href="https://leetcode-cn.com/problems/house-robber-iii/" target="_blank" rel="noopener">337. 打家劫舍 III</a></p>
+<h4 id="104-二叉树的最大深度"><a href="#104-二叉树的最大深度" class="headerlink" title="104. 二叉树的最大深度"></a><a href="https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. 二叉树的最大深度</a></h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(maxDepth(root-&gt;right),maxDepth(root-&gt;left))+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="110-平衡二叉树"><a href="#110-平衡二叉树" class="headerlink" title="110. 平衡二叉树"></a><a href="https://leetcode-cn.com/problems/balanced-binary-tree/" target="_blank" rel="noopener">110. 平衡二叉树</a></h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//解法1：设置一个全局标记表示有没有非平衡二叉树</span></span><br><span class="line"><span class="keyword">bool</span> res=<span class="literal">true</span>;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isBalanced</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">	maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> res;   </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">maxDepth</span><span class="params">(TreeNode* root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> l=maxDepth(root-&gt;left);<span class="comment">//左子树的高度</span></span><br><span class="line">	<span class="keyword">int</span> r=maxDepth(root-&gt;right);<span class="comment">//右子树的高度</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">abs</span>(l-r)&gt;<span class="number">1</span>)</span><br><span class="line">		res=<span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(l,r)+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//解法2：每次遍历返回树的高度和是否为二叉树 pair&lt;int,bool&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isBalanced</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">	pair&lt;<span class="keyword">int</span>,<span class="keyword">bool</span>&gt; res=fs(root);</span><br><span class="line">	<span class="keyword">return</span> res.second;</span><br><span class="line">&#125;</span><br><span class="line">pair&lt;int,bool&gt; fs(TreeNode* root)&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">		<span class="keyword">return</span> make_pair(<span class="number">0</span>,<span class="literal">true</span>);</span><br><span class="line">	pair&lt;<span class="keyword">int</span>,<span class="keyword">bool</span>&gt; right=fs(root-&gt;right);</span><br><span class="line">	pair&lt;<span class="keyword">int</span>,<span class="keyword">bool</span>&gt; left=fs(root-&gt;left);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">abs</span>(right.first-left.first)&gt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> make_pair(<span class="built_in">max</span>(right.first,left.first)+<span class="number">1</span>,<span class="literal">false</span>);</span><br><span class="line">	<span class="keyword">return</span> make_pair(<span class="built_in">max</span>(right.first,left.first)+<span class="number">1</span>,right.second&amp;&amp;left.second);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="543-二叉树的直径"><a href="#543-二叉树的直径" class="headerlink" title="543. 二叉树的直径"></a><a href="https://leetcode-cn.com/problems/diameter-of-binary-tree/" target="_blank" rel="noopener">543. 二叉树的直径</a></h4><p>给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//节点直径等于左子树的高度+右子树的高度</span></span><br><span class="line"><span class="keyword">int</span> res=<span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">	diameter(root);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">diameter</span><span class="params">(TreeNode* root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> r=diameter(root-&gt;right);<span class="comment">//右子树的高度</span></span><br><span class="line">	<span class="keyword">int</span> l=diameter(root-&gt;left);<span class="comment">//左子树的高度</span></span><br><span class="line">	<span class="keyword">if</span>(l+r&gt;res)</span><br><span class="line">		res=l+r;<span class="comment">//节点直径等于左子树的高度+右子树的高度</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(l,r)+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="226-翻转二叉树"><a href="#226-翻转二叉树" class="headerlink" title="226. 翻转二叉树"></a><a href="https://leetcode-cn.com/problems/invert-binary-tree/" target="_blank" rel="noopener">226. 翻转二叉树</a></h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TreeNode* <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line"><span class="keyword">if</span>(root)&#123;</span><br><span class="line">	TreeNode* temp=root-&gt;left; </span><br><span class="line">	root-&gt;left=root-&gt;right;</span><br><span class="line">	root-&gt;right=temp;</span><br><span class="line">	invertTree(root-&gt;left);</span><br><span class="line">	invertTree(root-&gt;right);</span><br><span class="line">&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="617-合并二叉树"><a href="#617-合并二叉树" class="headerlink" title="617. 合并二叉树"></a><a href="https://leetcode-cn.com/problems/merge-two-binary-trees/" target="_blank" rel="noopener">617. 合并二叉树</a></h4><p>给定两个二叉树，想象当你将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。</p>
+<p>你需要将他们合并为一个新的二叉树。合并的规则是如果两个节点重叠，那么将他们的值相加作为节点合并后的新值，否则不为 NULL 的节点将直接作为新二叉树的节点</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//解法1：这种方法如果两个树对应位置都有元素，合并时新建立一个节点来存储他们的合并值，用时和空间消耗大</span></span><br><span class="line"><span class="function">TreeNode* <span class="title">mergeTrees</span><span class="params">(TreeNode* t1, TreeNode* t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(t1==<span class="literal">NULL</span>&amp;&amp;t2==<span class="literal">NULL</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span>(t1&amp;&amp;!t2)</span><br><span class="line">       <span class="keyword">return</span> t1;</span><br><span class="line">    <span class="keyword">if</span>(!t1&amp;&amp;t2)</span><br><span class="line">      <span class="keyword">return</span> t2;</span><br><span class="line">    TreeNode* root=<span class="keyword">new</span> TreeNode(t1-&gt;val+t2-&gt;val);</span><br><span class="line">    root-&gt;left=mergeTrees(t1-&gt;left,t2-&gt;left);</span><br><span class="line">    root-&gt;right=mergeTrees(t1-&gt;right,t2-&gt;right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//解法2：合并元素放在t1上，题目如要求不能更改两个树的值，就不能用这种方法</span></span><br><span class="line">   <span class="function">TreeNode* <span class="title">mergeTrees</span><span class="params">(TreeNode* t1, TreeNode* t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(t1==<span class="literal">NULL</span>&amp;&amp;t2==<span class="literal">NULL</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span>(t1&amp;&amp;!t2)</span><br><span class="line">       <span class="keyword">return</span> t1;</span><br><span class="line">    <span class="keyword">if</span>(!t1&amp;&amp;t2)</span><br><span class="line">      <span class="keyword">return</span> t2;</span><br><span class="line">    t1-&gt;val+=t2-&gt;val;</span><br><span class="line">    t1-&gt;left=mergeTrees(t1-&gt;left,t2-&gt;left);</span><br><span class="line">    t1-&gt;right=mergeTrees(t1-&gt;right,t2-&gt;right);</span><br><span class="line">    <span class="keyword">return</span> t1;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="112-路径总和"><a href="#112-路径总和" class="headerlink" title="112. 路径总和"></a><a href="https://leetcode-cn.com/problems/path-sum/" target="_blank" rel="noopener">112. 路径总和</a></h4><p>给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sum表示访问它的父节点后剩余的sum，根节点的sum为目标和，先序遍历每个元素，逐渐减sum，如果某个叶子节点的sum等于0那么存在</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasPathSum</span><span class="params">(TreeNode* root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root)&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root-&gt;right&amp;&amp;!root-&gt;left)</span><br><span class="line">        <span class="keyword">return</span> sum-root-&gt;val==<span class="number">0</span>?<span class="literal">true</span>:<span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> hasPathSum(root-&gt;left,sum-root-&gt;val)||  hasPathSum(root-&gt;right,sum-root-&gt;val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="437-路径总和-III"><a href="#437-路径总和-III" class="headerlink" title="437. 路径总和 III"></a><a href="https://leetcode-cn.com/problems/path-sum-iii/" target="_blank" rel="noopener">437. 路径总和 III</a></h4><p>找出路径和等于给定数值的路径总数。路径不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> res=<span class="number">0</span>;</span><br><span class="line"><span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; cumulatesum;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pathSum</span><span class="params">(TreeNode* root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">	cumulatesum[<span class="number">0</span>]=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	ps(root,<span class="number">0</span>,sum);</span><br><span class="line">	<span class="keyword">return</span> res; </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//用cumulatesum 记录从根节点到遍历节点的路径的之和。cumsum表示根节点到访问节点的父节点（也是上次遍历的节点）的路径累加和</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ps</span><span class="params">(TreeNode* root, <span class="keyword">int</span> cumsum,<span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root)&#123;</span><br><span class="line">        <span class="comment">//如果遍历到某个节点的时候，如过cumulatesum存在（cumsumsum+该节点的值-sum）的值，就说明该路径上有路径和为sum的路径</span></span><br><span class="line">		<span class="keyword">if</span>(cumulatesum.count(cumsum+root-&gt;val-sum)&gt;<span class="number">0</span>)</span><br><span class="line">			res+=cumulatesum[cumsum+root-&gt;val-sum];</span><br><span class="line">        <span class="comment">//将根节点到访问节点的路径和加入cumulatesum，标记已经访问过了，再走左右子树</span></span><br><span class="line">		cumulatesum[cumsum+root-&gt;val]++;</span><br><span class="line">		ps(root-&gt;left,cumsum+root-&gt;val,sum);</span><br><span class="line">		ps(root-&gt;right,cumsum+root-&gt;val,sum);</span><br><span class="line">        <span class="comment">//走完左右子树后，下一个要访问的节点在这个节点的上方，将要该路径和去掉，这样是为了保证路径方向必须是向下的</span></span><br><span class="line">		cumulatesum[cumsum+root-&gt;val]--;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="572-另一个树的子树"><a href="#572-另一个树的子树" class="headerlink" title="572. 另一个树的子树"></a><a href="https://leetcode-cn.com/problems/subtree-of-another-tree/" target="_blank" rel="noopener">572. 另一个树的子树</a></h4><p>给定两个非空二叉树 <strong>s</strong> 和 <strong>t</strong>，检验 <strong>s</strong> 中是否包含和 <strong>t</strong> 具有相同结构和节点值的子树。<strong>s</strong> 的一个子树包括 <strong>s</strong> 的一个节点和这个节点的所有子孙。<strong>s</strong> 也可以看做它自身的一棵子树。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从二叉树s遍历到与二叉树t根节点的值一样的每个位置，才用isSameTree判断两个子树是否相同。</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isSubtree</span><span class="params">(TreeNode* s, TreeNode* t)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>((!s&amp;&amp;t)|| (s&amp;&amp;!t))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">if</span>(!s&amp;&amp;!t)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">       <span class="keyword">bool</span> hasSubtree=<span class="literal">false</span>;<span class="comment">//如果该节点的子树与目标子树一样，就不用往下遍历，hasSubtree用来标记是否有相同子树。</span></span><br><span class="line">       <span class="keyword">if</span>(s-&gt;val==t-&gt;val)&#123;</span><br><span class="line">         hasSubtree=isSameTree(s,t);</span><br><span class="line">         <span class="keyword">if</span>(hasSubtree) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">        <span class="keyword">if</span>(!hasSubtree)</span><br><span class="line">          <span class="keyword">return</span> isSubtree(s-&gt;left,t)||isSubtree(s-&gt;right,t);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isSameTree</span><span class="params">(TreeNode* s, TreeNode* t)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="keyword">if</span>((!s&amp;&amp;t)|| (s&amp;&amp;!t))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(!s&amp;&amp;!t)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      <span class="keyword">if</span>(s-&gt;val!=t-&gt;val)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">     <span class="keyword">return</span> isSameTree(s-&gt;left,t-&gt;left)&amp;&amp;isSameTree(s-&gt;right,t-&gt;right);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="111-二叉树的最小深度"><a href="#111-二叉树的最小深度" class="headerlink" title="111. 二叉树的最小深度"></a><a href="https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/" target="_blank" rel="noopener">111. 二叉树的最小深度</a></h4><p>给定一个二叉树，找出其最小深度。</p>
+<p>最小深度是从根节点到最近叶子节点的最短路径上的节点数量。</p>
+<p><strong>说明:</strong> 叶子节点是指没有子节点的节点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">minDepth</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">         <span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">          <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(!root-&gt;left&amp;&amp;!root-&gt;right)<span class="comment">//如果是叶子节点</span></span><br><span class="line">         <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  <span class="comment">//如果该节点有右子树没有左子树，那么该节点的子树最小深度为右子树的最小深度加1；有左子树没有右子树的情况同理</span></span><br><span class="line">         <span class="keyword">if</span>(!root-&gt;left&amp;&amp;root-&gt;right)</span><br><span class="line">         <span class="keyword">return</span> minDepth(root-&gt;right)+<span class="number">1</span>;</span><br><span class="line">         <span class="keyword">if</span>(root-&gt;left&amp;&amp;!root-&gt;right)</span><br><span class="line">         <span class="keyword">return</span> minDepth(root-&gt;left)+<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//如果该节点都有左右子树</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">min</span>(minDepth(root-&gt;left),minDepth(root-&gt;right))+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="404-左叶子之和"><a href="#404-左叶子之和" class="headerlink" title="404. 左叶子之和"></a><a href="https://leetcode-cn.com/problems/sum-of-left-leaves/" target="_blank" rel="noopener">404. 左叶子之和</a></h4><p>计算给定二叉树的所有左叶子之和。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//last记录上一次访问的非叶子节点，如果当前节点是个叶子节点而且是last的左孩子，那该节点就是左叶子</span></span><br><span class="line">TreeNode* last=<span class="literal">NULL</span>;</span><br><span class="line">   <span class="keyword">int</span> sum=<span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumOfLeftLeaves</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(!root-&gt;left&amp;&amp;!root-&gt;right)</span><br><span class="line">    <span class="keyword">if</span>(last&amp;&amp;last-&gt;left==root)</span><br><span class="line">      sum+=root-&gt;val;</span><br><span class="line">    last=root;</span><br><span class="line">    sumOfLeftLeaves(root-&gt;left);</span><br><span class="line">    sumOfLeftLeaves(root-&gt;right);</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="101-对称二叉树"><a href="#101-对称二叉树" class="headerlink" title="101. 对称二叉树"></a><a href="https://leetcode-cn.com/problems/symmetric-tree/" target="_blank" rel="noopener">101. 对称二叉树</a></h4><p>给定一个二叉树，检查它是否是镜像对称的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以高度为3的二叉树为例，如果是镜像对称，那么根节点的左孩子和右孩子首先要相同，然后还需要左孩子的左孩子和右孩子的右孩子相同，左孩子的右孩子和右孩子的左孩子相同。</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isSymmetric</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span>(root)</span><br><span class="line">        <span class="keyword">return</span> isSymmetric2(root-&gt;left,root-&gt;right);</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isSymmetric2</span><span class="params">(TreeNode* t1,TreeNode* t2)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="keyword">if</span>(!t1&amp;&amp;!t2)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      <span class="keyword">if</span>(!t1&amp;&amp;t2||t1&amp;&amp;!t2)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">if</span>(t1-&gt;val==t2-&gt;val)</span><br><span class="line">        <span class="keyword">return</span> isSymmetric2(t1-&gt;right,t2-&gt;left)&amp;&amp;isSymmetric2(t1-&gt;left,t2-&gt;right);</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="687-最长同值路径"><a href="#687-最长同值路径" class="headerlink" title="687. 最长同值路径"></a><a href="https://leetcode-cn.com/problems/longest-univalue-path/" target="_blank" rel="noopener">687. 最长同值路径</a></h4><p>给定一个二叉树，找到最长的路径，这个路径中的每个节点具有相同值。 这条路径可以经过也可以不经过根节点。</p>
+<p><strong>注意</strong>：两个节点之间的路径长度由它们之间的边数表示。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//叶子节点，或者一个跟他们的左右孩子节点的值都不相等的节点，路径为0；</span></span><br><span class="line"><span class="comment">//如果它的父节点与左孩子节点的值一样，那么父节点的路径=左孩子的最长路径+1；同理，对右孩子节点也是一样</span></span><br><span class="line"><span class="comment">//如果父节点与左右左孩子节点的值都一样，父节点的路径=左孩子的最长路径+2+右孩子的最长路径；</span></span><br><span class="line"><span class="keyword">int</span> res=<span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">longestUnivaluePath</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">longpath(root);</span><br><span class="line"><span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">longpath</span><span class="params">(TreeNode* root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root)</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">int</span> l=longpath(root-&gt;left); </span><br><span class="line">	<span class="keyword">int</span> r=longpath(root-&gt;right);</span><br><span class="line">	<span class="keyword">int</span> leftpath=(root-&gt;left&amp;&amp;root-&gt;left-&gt;val==root-&gt;val)?l+<span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> rightpath=(root-&gt;right&amp;&amp;root-&gt;right-&gt;val==root-&gt;val)?r+<span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">	res=<span class="built_in">max</span>(res,leftpath+rightpath);</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(leftpath,rightpath);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="671-二叉树中第二小的节点"><a href="#671-二叉树中第二小的节点" class="headerlink" title="671. 二叉树中第二小的节点"></a><a href="https://leetcode-cn.com/problems/second-minimum-node-in-a-binary-tree/" target="_blank" rel="noopener">671. 二叉树中第二小的节点</a></h4><p>给定一个非空特殊的二叉树，每个节点都是正数，并且每个节点的子节点数量只能为 2 或 0。如果一个节点有两个子节点的话，那么这个节点的值不大于它的子节点的值。 </p>
+<p>给出这样的一个二叉树，你需要输出所有节点中的第二小的值。如果第二小的值不存在的话，输出 -1 。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> first=LLONG_MAX,second=LLONG_MAX;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">findSecondMinimumValue</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	fs(root);</span><br><span class="line">    <span class="keyword">return</span> second==LLONG_MAX?<span class="number">-1</span>:second;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fs</span><span class="params">(TreeNode* root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(root-&gt;val&lt;first)&#123;</span><br><span class="line">           first=root-&gt;val;</span><br><span class="line">          <span class="keyword">if</span>(second!=LLONG_MAX)</span><br><span class="line">             second=first;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(root-&gt;val!=first&amp;&amp;(root-&gt;val&lt;second))&#123;</span><br><span class="line">         second=root-&gt;val;</span><br><span class="line">          <span class="keyword">return</span>;<span class="comment">//如果这个节点可能是第二小节点，那么它的子节点不用遍历了</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      fs(root-&gt;left);</span><br><span class="line">      fs(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="337-打家劫舍-III"><a href="#337-打家劫舍-III" class="headerlink" title="337. 打家劫舍 III"></a><a href="https://leetcode-cn.com/problems/house-robber-iii/" target="_blank" rel="noopener">337. 打家劫舍 III</a></h4><p>在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为“根”。 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。</p>
+<p>计算在不触动警报的情况下，小偷一晚能够盗取的最高金额。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rob</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="literal">NULL</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(!root-&gt;right&amp;!root-&gt;left)</span><br><span class="line">		<span class="keyword">return</span> root-&gt;val;</span><br><span class="line">	<span class="comment">//偷两个子节点的收益</span></span><br><span class="line">    <span class="keyword">int</span> llr=rob(root-&gt;left);</span><br><span class="line">    <span class="keyword">int</span> rlr=rob(root-&gt;right);</span><br><span class="line">    <span class="keyword">int</span> res=rlr+llr;</span><br><span class="line">    <span class="comment">//不偷两个子节点的收益</span></span><br><span class="line">    <span class="keyword">int</span> l=(root-&gt;left)?rob(root-&gt;left-&gt;right)+rob(root-&gt;left-&gt;left):<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> r=(root-&gt;right)?rob(root-&gt;right-&gt;right)+rob(root-&gt;right-&gt;left):<span class="number">0</span>;</span><br><span class="line">    res=<span class="built_in">max</span>(res,l+r+root-&gt;val);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%80%92%E5%BD%92/" rel="tag"># 二叉树递归</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E6%97%A0%E5%90%8D%E7%AE%A1%E9%81%93%E5%92%8C%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/" rel="next" title="进程间通信-无名管道和有名管道">
+                <i class="fa fa-chevron-left"></i> 进程间通信-无名管道和有名管道
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Wentao Yung</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#104-二叉树的最大深度"><span class="nav-number">1.</span> <span class="nav-text">104. 二叉树的最大深度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#110-平衡二叉树"><span class="nav-number">2.</span> <span class="nav-text">110. 平衡二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#543-二叉树的直径"><span class="nav-number">3.</span> <span class="nav-text">543. 二叉树的直径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#226-翻转二叉树"><span class="nav-number">4.</span> <span class="nav-text">226. 翻转二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#617-合并二叉树"><span class="nav-number">5.</span> <span class="nav-text">617. 合并二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#112-路径总和"><span class="nav-number">6.</span> <span class="nav-text">112. 路径总和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#437-路径总和-III"><span class="nav-number">7.</span> <span class="nav-text">437. 路径总和 III</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#572-另一个树的子树"><span class="nav-number">8.</span> <span class="nav-text">572. 另一个树的子树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#111-二叉树的最小深度"><span class="nav-number">9.</span> <span class="nav-text">111. 二叉树的最小深度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#404-左叶子之和"><span class="nav-number">10.</span> <span class="nav-text">404. 左叶子之和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#101-对称二叉树"><span class="nav-number">11.</span> <span class="nav-text">101. 对称二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#687-最长同值路径"><span class="nav-number">12.</span> <span class="nav-text">687. 最长同值路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#671-二叉树中第二小的节点"><span class="nav-number">13.</span> <span class="nav-text">671. 二叉树中第二小的节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#337-打家劫舍-III"><span class="nav-number">14.</span> <span class="nav-text">337. 打家劫舍 III</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wentao Yung</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
