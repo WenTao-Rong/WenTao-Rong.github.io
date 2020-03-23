@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="共享内存,信号量," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="共享内存是最快的一种 IPC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程间通信-使用信号量同步对共享内存的访问">
+<meta property="og:url" content="http://yoursite.com/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/index.html">
+<meta property="og:site_name" content="容文滔">
+<meta property="og:description" content="共享内存是最快的一种 IPC">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/shmreader.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/shmwriter.jpg">
+<meta property="article:published_time" content="2020-03-23T07:07:45.000Z">
+<meta property="article:modified_time" content="2020-03-23T07:07:45.000Z">
+<meta property="article:author" content="Wentao Yung">
+<meta property="article:tag" content="共享内存">
+<meta property="article:tag" content="信号量">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/shmreader.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/23/进程间通信-使用信号量同步对共享内存的访问/"/>
+
+
+
+
+
+  <title>进程间通信-使用信号量同步对共享内存的访问 | 容文滔</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">容文滔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wentao Yung">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="容文滔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">进程间通信-使用信号量同步对共享内存的访问</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-23T15:07:45+08:00">
+                2020-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index">
+                    <span itemprop="name">进程通信</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" itemprop="url" rel="index">
+                    <span itemprop="name">共享内存</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>共享内存是最快的一种 IPC</strong><a id="more"></a>，不同进程之间共享的内存通常安排在同一段物理内存中 。 进程可以将同一段共享内存连接到它们 自己 的地址空间中，所有进程都可以访问共享内存中的地址，就好像它们是由用 C 语言 函数 malloc 分配的内存一样。而如果某个进程向共享内存写入数据，所做的改动将立即影响到可以访问同一段共享内存的任何其他进程 。</p>
+<p>但<strong>共享内存没有提供同步的机制</strong>  ,通常需要信号量来同步对共享内存的访问。</p>
+<p><strong>信号量</strong>：它是一个计数器，用于为多个进程提供对共享数据对象的访问  </p>
+<p>下面的程序使用信号量来同步对内存的访问。 writer 发送数据后 reader 才能读数据，否则阻塞等待；reader读完数据writer才能写，否则阻塞等待  。</p>
+<h4 id="实现方法："><a href="#实现方法：" class="headerlink" title="实现方法："></a>实现方法：</h4><p>申请两个信号量（mutex0一个表示可读数，mutex1一个可写数）</p>
+<p>初始化 mutex0=0;mutex1=1;</p>
+<p>reader读数据时：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">P(mutex0);&#x2F;&#x2F;P操作 mutex0 减1 当mutex0小于0时会阻塞</span><br><span class="line"></span><br><span class="line">访问数据</span><br><span class="line"></span><br><span class="line">V(mutex1);&#x2F;&#x2F;V操作 mutex1 加1</span><br></pre></td></tr></table></figure>
+
+<p>writer写数据时：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">P(mutex1)；</span><br><span class="line"></span><br><span class="line">写数据</span><br><span class="line"></span><br><span class="line">V(mutex0)；</span><br></pre></td></tr></table></figure>
+
+<p>具体代码如下：</p>
+<h4 id="读端的程序-shmreader-c"><a href="#读端的程序-shmreader-c" class="headerlink" title="读端的程序 shmreader.c"></a>读端的程序 shmreader.c</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> SEM_KEY 4001</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> SHM_KEY 5678</span></span><br><span class="line"><span class="keyword">union</span> semun</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> semid,shmid;</span><br><span class="line">	shmid=shmget(SHM_KEY,<span class="keyword">sizeof</span>(<span class="keyword">int</span>),IPC_CREAT|<span class="number">0666</span>);</span><br><span class="line">	<span class="comment">//shmget返回一个与key相关的共享内存标识符 ，第二个参数表示申请共享内存的大小，</span></span><br><span class="line">	<span class="comment">//IPC_CREAT：如果共享内存不存在，则创建一个共享内存，否则打开操作</span></span><br><span class="line">	<span class="keyword">if</span>(shmid&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"create shm error"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">void</span> * shmptr;</span><br><span class="line">	shmptr=shmat(shmid,<span class="literal">NULL</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="comment">//把共享内存连接到当前进程的地址空间，</span></span><br><span class="line">	<span class="comment">//第二个参数指定共享内存连接到当前进程中的地址位置，通常为NULL，表示让系统来选择共享内存的地址</span></span><br><span class="line">	<span class="keyword">if</span>(shmptr==(<span class="keyword">void</span> *)<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d(%s)\n"</span>,errno,strerror(errno));</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> * data=(<span class="keyword">int</span> *) shmptr;</span><br><span class="line">	semid=semget(SEM_KEY,<span class="number">2</span>,IPC_CREAT|<span class="number">0666</span>);</span><br><span class="line">	<span class="comment">//创建两个信号量，第一个信号量表示可读数量（初始化为0），第二个信号表示可写数量（初始化为1）</span></span><br><span class="line">	<span class="comment">//如果存在，则打开</span></span><br><span class="line">    <span class="keyword">union</span> semun semnu1; <span class="comment">//semctl初始化信号量的值</span></span><br><span class="line">	semnu1.val=<span class="number">0</span>;</span><br><span class="line">	semctl(semid,<span class="number">0</span>,SETVAL,semnu1);</span><br><span class="line">	semnu1.val=<span class="number">1</span>;</span><br><span class="line">	semctl(semid,<span class="number">1</span>,SETVAL,semnu1);</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sembuf1</span>;</span></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		sembuf1.sem_num=<span class="number">0</span>;</span><br><span class="line">		sembuf1.sem_op=<span class="number">-1</span>;</span><br><span class="line">		sembuf1.sem_flg=SEM_UNDO;</span><br><span class="line">		semop(semid,&amp;sembuf1,<span class="number">1</span>);<span class="comment">//对第一个信号量做P操作</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"the num:%d\n"</span>,*data);</span><br><span class="line">		sembuf1.sem_num=<span class="number">1</span>;</span><br><span class="line">		sembuf1.sem_op=<span class="number">1</span>;</span><br><span class="line">                sembuf1.sem_flg=SEM_UNDO;</span><br><span class="line">		semop(semid,&amp;sembuf1,<span class="number">1</span>);<span class="comment">//对第二个信号量做V操作</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(shmdt(data)==<span class="number">-1</span>)</span><br><span class="line">		<span class="comment">//shmdt 函数用于将共享内存从当前进程中分离.将共享内存分离并不是删除它，只使该共享内存对当前进程不再可用</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d(%s)"</span>,errno,strerror(errno));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="写端的程序-shmwriter-c"><a href="#写端的程序-shmwriter-c" class="headerlink" title="写端的程序 shmwriter.c"></a>写端的程序 shmwriter.c</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SHM_KEY 5678</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEM_KEY 4001</span></span><br><span class="line"><span class="keyword">union</span> semun</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> shmid=shmget((<span class="keyword">key_t</span>)SHM_KEY,<span class="keyword">sizeof</span>(<span class="keyword">int</span>),IPC_CREAT|<span class="number">0666</span>);</span><br><span class="line">	<span class="keyword">if</span>(shmid==<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d(%s)"</span>,errno,strerror(errno));</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">void</span> * shm_ptr=shmat(shmid,<span class="literal">NULL</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span>(shm_ptr==(<span class="keyword">void</span> *)<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d(%s)"</span>,errno,strerror(errno));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> * data=(<span class="keyword">int</span> *)shm_ptr;</span><br><span class="line">	<span class="keyword">int</span> semid=semget(SEM_KEY,<span class="number">2</span>,<span class="number">0666</span>);</span><br><span class="line">	<span class="comment">//创建两个信号量，第一个信号量表示可读数量（初始化为0），第二个信号表示可写数量（初始化为1）</span></span><br><span class="line">	<span class="comment">//如果存在，则打开</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sembuf1</span>;</span></span><br><span class="line">	<span class="keyword">union</span> semun semun1; <span class="comment">//semctl初始化信号量的值</span></span><br><span class="line">	semun1.val=<span class="number">0</span>;</span><br><span class="line">	semctl(semid,<span class="number">0</span>,SETVAL,semun1);</span><br><span class="line">	semun1.val=<span class="number">1</span>;</span><br><span class="line">	semctl(semid,<span class="number">1</span>,SETVAL,semun1);</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sembuf1.sem_num=<span class="number">1</span>;</span><br><span class="line">        sembuf1.sem_op=<span class="number">-1</span>;</span><br><span class="line">        sembuf1.sem_flg=SEM_UNDO;</span><br><span class="line">        semop(semid,&amp;sembuf1,<span class="number">1</span>);<span class="comment">//对第2个信号量（可写数量）做P操作 </span></span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>,data);</span><br><span class="line">        sembuf1.sem_num=<span class="number">0</span>;</span><br><span class="line">        sembuf1.sem_op=<span class="number">1</span>;</span><br><span class="line">        sembuf1.sem_flg=SEM_UNDO;</span><br><span class="line">        semop(semid,&amp;sembuf1,<span class="number">1</span>);<span class="comment">//对第1个信号量（可读数量）做V操作 </span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(shmdt(shm_ptr)==<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d(%s)"</span>,errno,strerror(errno));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="程序结果图："><a href="#程序结果图：" class="headerlink" title="程序结果图："></a>程序结果图：</h4><p><img src="/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/shmreader.jpg" alt="reader"><br><img src="/2020/03/23/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%90%8C%E6%AD%A5%E5%AF%B9%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%BF%E9%97%AE/shmwriter.jpg" alt="writer"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" rel="tag"># 共享内存</a>
+          
+            <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/" rel="tag"># 信号量</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/20/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86/" rel="next" title="二叉树非递归遍历">
+                <i class="fa fa-chevron-left"></i> 二叉树非递归遍历
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Wentao Yung</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现方法："><span class="nav-number">1.</span> <span class="nav-text">实现方法：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读端的程序-shmreader-c"><span class="nav-number">2.</span> <span class="nav-text">读端的程序 shmreader.c</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写端的程序-shmwriter-c"><span class="nav-number">3.</span> <span class="nav-text">写端的程序 shmwriter.c</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序结果图："><span class="nav-number">4.</span> <span class="nav-text">程序结果图：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wentao Yung</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
