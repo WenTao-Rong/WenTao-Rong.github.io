@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="DP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="DP 本质是穷举，但是对集合的穷举，而不是一个一个地穷举，所以要定义集合, 集合的属性（最值和数量）以及状态计算 （集合划分）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从集合看DP">
+<meta property="og:url" content="http://yoursite.com/2020/06/14/%E4%BB%8E%E9%9B%86%E5%90%88%E7%9C%8BDP/index.html">
+<meta property="og:site_name" content="容文滔">
+<meta property="og:description" content="DP 本质是穷举，但是对集合的穷举，而不是一个一个地穷举，所以要定义集合, 集合的属性（最值和数量）以及状态计算 （集合划分）">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-14T06:43:22.826Z">
+<meta property="article:modified_time" content="2020-06-14T06:43:22.826Z">
+<meta property="article:author" content="Wentao Yung">
+<meta property="article:tag" content="DP">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/14/从集合看DP/"/>
+
+
+
+
+
+  <title>从集合看DP | 容文滔</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">容文滔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/14/%E4%BB%8E%E9%9B%86%E5%90%88%E7%9C%8BDP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wentao Yung">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="容文滔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从集合看DP</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-14T14:43:22+08:00">
+                2020-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/DP/" itemprop="url" rel="index">
+                    <span itemprop="name">DP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>DP 本质是穷举，但是对集合的穷举，而不是一个一个地穷举，所以要定义集合, 集合的属性（最值和数量）以及状态计算 （集合划分）</p>
+<a id="more"></a>
+
+<h4 id="53-最大子序和"><a href="#53-最大子序和" class="headerlink" title="53. 最大子序和"></a><a href="https://leetcode-cn.com/problems/maximum-subarray/" target="_blank" rel="noopener">53. 最大子序和</a></h4><p>给定一个整数数组 <code>nums</code> ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxSubArray</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">  	<span class="comment">/*</span></span><br><span class="line"><span class="comment">  	dp[i] 所有以nums[i]结尾的子数组集合，属性是最大和 </span></span><br><span class="line"><span class="comment">    dp[i]=max(nums[i]+dp[i-1],nums[i])</span></span><br><span class="line"><span class="comment">    res=max(dp[0],dp[1]...)</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> last=<span class="number">0</span>,now=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> res=INT_MIN;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> n:nums)</span><br><span class="line">    &#123;</span><br><span class="line">      now=<span class="built_in">max</span>(last,<span class="number">0</span>)+n;</span><br><span class="line">      last=now;</span><br><span class="line">      res=<span class="built_in">max</span>(now,res);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="120-三角形最小路径和"><a href="#120-三角形最小路径和" class="headerlink" title="120. 三角形最小路径和"></a><a href="https://leetcode-cn.com/problems/triangle/" target="_blank" rel="noopener">120. 三角形最小路径和</a></h4><p>给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。</p>
+<p>相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">minimumTotal</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i][j]所有到达到第i层，第j个的路径集合，属性是最小路径和</span></span><br><span class="line"><span class="comment">    res=max(f[n][0],f[n][1]...&#125;</span></span><br><span class="line"><span class="comment">    f[i][j]分两种集合，一种是从经过左上角f[i-1][j-1]，另外一种是经过右上角f[i-1][j+1],当然需要判断是否存在那一种</span></span><br><span class="line"><span class="comment">    f[i][j]=nums[i][j]+min(f[i-1][j-1],f[i-1][j+1])</span></span><br><span class="line"><span class="comment">    滚动数组 使用 &amp;1</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> n=nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">int</span> res=INT_MAX;</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; <span class="title">f</span><span class="params">(<span class="number">2</span>,<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(n,<span class="number">0</span>))</span></span>;</span><br><span class="line">    f[<span class="number">0</span>][<span class="number">0</span>]=nums[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;=i;j++)</span><br><span class="line">        &#123;</span><br><span class="line">            f[i &amp;<span class="number">1</span>][j]=INT_MAX;</span><br><span class="line">            <span class="keyword">if</span>(j&lt;i)  f[i &amp;<span class="number">1</span>][j]=<span class="built_in">min</span>(f[i &amp;<span class="number">1</span>][j],nums[i][j]+f[i<span class="number">-1</span> &amp; <span class="number">1</span>][j]);<span class="comment">//右上角</span></span><br><span class="line">            <span class="keyword">if</span>(j&gt;<span class="number">0</span>) f[i &amp;<span class="number">1</span>][j]=<span class="built_in">min</span>(f[i&amp;<span class="number">1</span>][j],nums[i][j]+f[i<span class="number">-1</span> &amp;<span class="number">1</span>][j<span class="number">-1</span>]);<span class="comment">//左上角</span></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;n;j++)</span><br><span class="line">        res=<span class="built_in">min</span>(res,f[n<span class="number">-1</span> &amp;<span class="number">1</span>][j]);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="63-不同路径-II"><a href="#63-不同路径-II" class="headerlink" title="63. 不同路径 II"></a><a href="https://leetcode-cn.com/problems/unique-paths-ii/" target="_blank" rel="noopener">63. 不同路径 II</a></h4><p>一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。</p>
+<p>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。</p>
+<p>现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uniquePathsWithObstacles</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i][j]所有到达i，j位置的路径集合，集合属性是路径数</span></span><br><span class="line"><span class="comment">    f[i][j]=f[i][j-1]+f[i-1][j] 经过上方和左方的路径和</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> n=nums.<span class="built_in">size</span>(),m=nums[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; <span class="title">f</span><span class="params">(n,<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(m,<span class="number">0</span>))</span></span>;</span><br><span class="line">    f[<span class="number">0</span>][<span class="number">0</span>]=!(nums[<span class="number">0</span>][<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;m;j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[i][j]) <span class="keyword">continue</span>;<span class="comment">//障碍点</span></span><br><span class="line">            <span class="keyword">if</span>(i) f[i][j]+=f[i<span class="number">-1</span>][j];</span><br><span class="line">            <span class="keyword">if</span>(j) f[i][j]+=f[i][j<span class="number">-1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> f[n<span class="number">-1</span>][m<span class="number">-1</span>];</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="198-打家劫舍"><a href="#198-打家劫舍" class="headerlink" title="198. 打家劫舍"></a><a href="https://leetcode-cn.com/problems/house-robber/" target="_blank" rel="noopener">198. 打家劫舍</a></h4><p>你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。</p>
+<p>给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i] 所有在i个房屋中所有选i的集合，属性是最大收益，</span></span><br><span class="line"><span class="comment">    g[i] 所有在i个房屋中不选i的集合，属性是最大收益</span></span><br><span class="line"><span class="comment">    f[i]+=g[i-1]+nums[i];</span></span><br><span class="line"><span class="comment">    g[i]+=max(f[i-1],g[i-1]);</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> n=nums.<span class="built_in">size</span>();</span><br><span class="line">    vector&lt;int&gt; f(n+1,0),g(n+1,0);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        f[i]=g[i<span class="number">-1</span>]+nums[i<span class="number">-1</span>];</span><br><span class="line">        g[i]=<span class="built_in">max</span>(f[i<span class="number">-1</span>],g[i<span class="number">-1</span>]);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(g[n],f[n]);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="300-最长上升子序列"><a href="#300-最长上升子序列" class="headerlink" title="300. 最长上升子序列"></a><a href="https://leetcode-cn.com/problems/longest-increasing-subsequence/" target="_blank" rel="noopener">300. 最长上升子序列</a></h4><p>给定一个无序的整数数组，找到其中最长上升子序列的长度。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lengthOfLIS</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i] 所有以nums[i]结尾的最长上升序列集合，属性是长度</span></span><br><span class="line"><span class="comment">    f[i]=max(f[k]+1,f[i]) nums[i]&gt;=f[k], k=0...i-1</span></span><br><span class="line"><span class="comment">    res=max(f[0],f[1]...)</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> n=nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">int</span> res=<span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">f</span><span class="params">(n,<span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=i<span class="number">-1</span>;j&gt;=<span class="number">0</span>;j--)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[i]&gt;nums[j])</span><br><span class="line">                f[i]=<span class="built_in">max</span>(f[j]+<span class="number">1</span>,f[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        res=<span class="built_in">max</span>(res,f[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="72-编辑距离"><a href="#72-编辑距离" class="headerlink" title="72. 编辑距离"></a><a href="https://leetcode-cn.com/problems/edit-distance/" target="_blank" rel="noopener">72. 编辑距离</a></h4><p>给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。</p>
+<p>你可以对一个单词进行如下三种操作：</p>
+<p>插入一个字符<br>删除一个字符<br>替换一个字符</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(<span class="built_in">string</span> word1, <span class="built_in">string</span> word2)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i][j]集合：所有word 1前i换成word2 前j个字符的操作方案，属性是所有方案中的最小操作数</span></span><br><span class="line"><span class="comment">    f[i][j]分四种情况：</span></span><br><span class="line"><span class="comment">    1.在word1 第i个字符后插入一个与word2 第j个字符相同的字符，那操作方案是 word1 前i个字符换成 word2 前j-1个字符的最小操作数+1，即f[i][j-1]+1 </span></span><br><span class="line"><span class="comment">    2.删除word1 第i个字符，f[i-1][j]+1 </span></span><br><span class="line"><span class="comment">    3.将替换word1第i个字符为word2第j个字符, f[i-1][j-1]+1 </span></span><br><span class="line"><span class="comment">    4.当word1第i个字符与word2第j个字符相等时, f[i-1][j-1]</span></span><br><span class="line"><span class="comment">    f[i][j]=min(f[i][j-1]+1,f[i-1][j]+1,f[i-1][j-1]+(word1[i]!=word2[j]))</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> n=word1.<span class="built_in">size</span>(),m=word2.<span class="built_in">size</span>();</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; <span class="title">f</span><span class="params">(n+<span class="number">1</span>,<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(m+<span class="number">1</span>))</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;m+<span class="number">1</span>;i++) f[<span class="number">0</span>][i]=i;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n+<span class="number">1</span>;i++) f[i][<span class="number">0</span>]=i;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n+<span class="number">1</span>;i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;m+<span class="number">1</span>;j++)</span><br><span class="line">        &#123;</span><br><span class="line">            f[i][j]=<span class="built_in">min</span>(f[i][j<span class="number">-1</span>],f[i<span class="number">-1</span>][j])+<span class="number">1</span>;</span><br><span class="line">            f[i][j]=<span class="built_in">min</span>(f[i][j],f[i<span class="number">-1</span>][j<span class="number">-1</span>]+(word1[i<span class="number">-1</span>]!=word2[j<span class="number">-1</span>]));</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> f[n][m];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="518-零钱兑换-II"><a href="#518-零钱兑换-II" class="headerlink" title="518. 零钱兑换 II"></a><a href="https://leetcode-cn.com/problems/coin-change-2/" target="_blank" rel="noopener">518. 零钱兑换 II</a></h4><p>给定不同面额的硬币和一个总金额。写出函数来计算可以凑成总金额的硬币组合数。假设每一种面额的硬币有无限个。 </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">change</span><span class="params">(<span class="keyword">int</span> amount, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; coins)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i][j]用前i个种硬币凑金额j的组合，属性是数目</span></span><br><span class="line"><span class="comment">    f[i][j]分两种情况</span></span><br><span class="line"><span class="comment">    1.不用第i种硬币凑成金额j，f[i-1][j]</span></span><br><span class="line"><span class="comment">    2.用第i种硬币凑</span></span><br><span class="line"><span class="comment">    令c=coin[i]；</span></span><br><span class="line"><span class="comment">     f[i][j]=f[i-1][j]+f[i-1][j-c]+f[i-1][j-2c]+...f[i-1][j-kc];</span></span><br><span class="line"><span class="comment">     而f[i][j-c]=       f[i-1][j-c]+f[i-1][j-2c]+...f[i-1][j-kc]</span></span><br><span class="line"><span class="comment">     所以</span></span><br><span class="line"><span class="comment">      f[i][j]=f[i-1][j]+f[i][j-c]；</span></span><br><span class="line"><span class="comment">      顺序遍历，可用一维数组，f[i][j-c]在第i层算出来的，没有覆盖状态</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    <span class="keyword">int</span> n=coins.<span class="built_in">size</span>();</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">f</span><span class="params">(amount+<span class="number">1</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">    f[<span class="number">0</span>]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> coin:coins)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=coin;j&lt;amount+<span class="number">1</span>;j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(j-coin&gt;=<span class="number">0</span>)</span><br><span class="line">                f[j]+=f[j-coin];</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> f[amount];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="91-解码方法"><a href="#91-解码方法" class="headerlink" title="91. 解码方法"></a><a href="https://leetcode-cn.com/problems/decode-ways/" target="_blank" rel="noopener">91. 解码方法</a></h4><p>一条包含字母 A-Z 的消息通过以下方式进行了编码：</p>
+<p>‘A’ -&gt; 1<br>‘B’ -&gt; 2<br>…<br>‘Z’ -&gt; 26<br>给定一个只包含数字的非空字符串，请计算解码方法的总数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">numDecodings</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    f[i]所有前i个字符解码的方法，属性是方法的数量</span></span><br><span class="line"><span class="comment">    f[i]分两种，一种是最后字母由第i个字符单独解码的方法，第二种是最后字母由第i 和i-1字符解码得到的方法，需要判断存在</span></span><br><span class="line"><span class="comment">    f[i]=f[i-1]+f[i-2];</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">int</span> n=s.length();</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">f</span><span class="params">(n+<span class="number">1</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">    f[<span class="number">0</span>]=<span class="number">1</span>;</span><br><span class="line">    f[<span class="number">1</span>]=(s[<span class="number">0</span>]-<span class="string">'0'</span>)!=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;n+<span class="number">1</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i<span class="number">-1</span>]-<span class="string">'0'</span>) f[i]+=f[i<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">int</span> num=s[i<span class="number">-1</span>]-<span class="string">'0'</span>+(s[i<span class="number">-2</span>]-<span class="string">'0'</span>)*<span class="number">10</span>;</span><br><span class="line">        <span class="keyword">if</span>(num&gt;=<span class="number">10</span>&amp;&amp;num&lt;=<span class="number">26</span>)</span><br><span class="line">            f[i]+=f[i<span class="number">-2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DP/" rel="tag"># DP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/07/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8Ehiredis%E5%B0%81%E8%A3%85%E5%90%8C%E6%AD%A5%E8%B0%83%E7%94%A8/" rel="next" title="Redis数据结构与hiredis封装同步调用">
+                <i class="fa fa-chevron-left"></i> Redis数据结构与hiredis封装同步调用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Wentao Yung</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#53-最大子序和"><span class="nav-number">1.</span> <span class="nav-text">53. 最大子序和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#120-三角形最小路径和"><span class="nav-number">2.</span> <span class="nav-text">120. 三角形最小路径和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#63-不同路径-II"><span class="nav-number">3.</span> <span class="nav-text">63. 不同路径 II</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#198-打家劫舍"><span class="nav-number">4.</span> <span class="nav-text">198. 打家劫舍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#300-最长上升子序列"><span class="nav-number">5.</span> <span class="nav-text">300. 最长上升子序列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#72-编辑距离"><span class="nav-number">6.</span> <span class="nav-text">72. 编辑距离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#518-零钱兑换-II"><span class="nav-number">7.</span> <span class="nav-text">518. 零钱兑换 II</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#91-解码方法"><span class="nav-number">8.</span> <span class="nav-text">91. 解码方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wentao Yung</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
